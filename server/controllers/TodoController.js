@@ -1,4 +1,5 @@
 const TodoModel = require("../models/TodoModel");
+const mongoose = require("mongoose");
 
 const MESSAGE_TODO_NOT_FOUND = "No such todo found";
 
@@ -9,6 +10,9 @@ const getTodos = async (req, res) => {
 
 const getTodo = async (req, res) => {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: MESSAGE_TODO_NOT_FOUND });
+    }
     const todo = await TodoModel.findById(id);
 
     if (!todo) {
@@ -29,6 +33,9 @@ const createTodo = async (req, res) => {
 
 const deleteTodo = async (req, res) => {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: MESSAGE_TODO_NOT_FOUND });
+    }
     const todo = await TodoModel.findOneAndDelete({ _id: id });
     if (!todo) {
         return res.status(404).json({ error: MESSAGE_TODO_NOT_FOUND });
@@ -38,6 +45,9 @@ const deleteTodo = async (req, res) => {
 
 const updateTodo = async (req, res) => {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: MESSAGE_TODO_NOT_FOUND });
+    }
     const todo = await TodoModel.findOneAndUpdate(
         { _id: id },
         {
